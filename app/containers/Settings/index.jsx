@@ -1,6 +1,8 @@
 // @flow
 
-import React, { Fragment, memo, useState, useEffect } from 'react';
+import React, {
+  Fragment, memo, useState, useEffect,
+} from 'react';
 import type { SyntheticEvent } from 'react';
 import { remote } from 'electron';
 import { connect } from 'react-redux';
@@ -157,7 +159,13 @@ const Settings = memo(({
         Quit Unsplash Wallpapers
       </button>
       <a className="author" href="https://github.com/soroushchehresa/unsplash-wallpapers">
-        Made with <i className="fa fa-heart" /> on GitHub (v{appPackage.version})
+        Made with
+        {' '}
+        <i className="fa fa-heart" />
+        {' '}
+        on GitHub (v
+        {appPackage.version}
+        )
       </a>
     </StyledSettings>
   );

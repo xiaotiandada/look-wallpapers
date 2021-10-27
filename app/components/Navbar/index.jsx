@@ -32,7 +32,7 @@ const Navbar = memo(({ location, activeTheme } : Props) => {
       <div className="logoWrapper">
         <img src={activeTheme === 'Dark' ? lightLogo : logo} alt="logo" />
         <p>
-          <span>Unsplash</span>
+          <span>Look</span>
           Wallpapers
         </p>
       </div>
@@ -43,6 +43,13 @@ const Navbar = memo(({ location, activeTheme } : Props) => {
           className={location.pathname === '/categories' ? 'active' : ''}
         >
           <i className="fa fa-th-large" />
+        </button>
+        <button
+          type="button"
+          onClick={() => handleChangePage('/custom')}
+          className={location.pathname === '/custom' ? 'active' : ''}
+        >
+          <i className="fa fa-american-sign-language-interpreting" aria-hidden="true" />
         </button>
         <button
           type="button"

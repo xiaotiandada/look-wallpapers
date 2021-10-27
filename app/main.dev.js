@@ -98,7 +98,7 @@ app.on('ready', () => {
       }
     });
 
-    window.webContents.once('did-frame-finish-load', function() {
+    window.webContents.once('did-frame-finish-load', () => {
       autoUpdater.checkForUpdatesAndNotify();
       if (process.env.NODE_ENV === 'development') {
         window.webContents.openDevTools();

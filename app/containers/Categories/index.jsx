@@ -12,7 +12,7 @@ type Props = {
   activeCategory : number,
 };
 
-const Categories = memo(({ activeCategory, setActiveCategoryAction } : Props) => {
+const Custom = memo(({ activeCategory, setActiveCategoryAction } : Props) => {
   const [getCategoriesLoading, setGetCategoriesLoading] = useState(true);
   const [categories, setCategories] = useState(null);
 
@@ -27,15 +27,18 @@ const Categories = memo(({ activeCategory, setActiveCategoryAction } : Props) =>
   return (
     <StyledCategories>
       {
-        getCategoriesLoading &&
+        getCategoriesLoading
+        && (
         <div className="loading-wrapper">
           <Loading size="20px" color="#bbb" />
         </div>
+        )
       }
+
       <div className="categories-wrapper">
         {
-          (categories && !getCategoriesLoading) &&
-          categories.map((categoryItem) => (
+          (categories && !getCategoriesLoading)
+          && categories.map(categoryItem => (
             <CategoryItem
               key={categoryItem.id}
               title={categoryItem.title}
@@ -53,9 +56,9 @@ const Categories = memo(({ activeCategory, setActiveCategoryAction } : Props) =>
 
 export default connect(
   state => ({
-    activeCategory: state.getIn(['Categories', 'activeCategory']),
+    activeCategory: state.getIn(['Custom', 'activeCategory']),
   }),
   {
     setActiveCategoryAction: setActiveCategory,
   },
-)(Categories);
+)(Custom);

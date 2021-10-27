@@ -253,6 +253,7 @@
     "source-map-support": "^0.5.9",
     "styled-components": "^4.2.0",
     "styled-theming": "^2.2.0",
+    "swr": "^1.0.1",
     "wallpaper": "^4.4.2"
   },
   "devEngines": {
