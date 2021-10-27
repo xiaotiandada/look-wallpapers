@@ -3,7 +3,7 @@
 </p>
 <div align="center">
 
-# Unsplash Wallpapers
+# Look Wallpapers
 
 <div>
   <!-- License -->
@@ -85,6 +85,7 @@ $ git clone https://github.com/soroushchehresa/unsplash-wallpapers.git unsplash-
 
 #### 2. Add Unsplash access key:
 Place Your [Unsplash access key](https://unsplash.com/documentation#authorization) as `UNSPLASH_ACCESS_KEY` in `.env` file.
+Place Your [Wallhaven access key](https://wallhaven.cc/help/api) as `WALLHAVEN_ACCESS_KEY` in `.env` file.
 
 
 #### 3. Start:

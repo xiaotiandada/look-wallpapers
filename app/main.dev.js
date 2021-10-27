@@ -131,8 +131,8 @@ storage.has('isRunAtStartup', (error, hasKey) => {
   if (!hasKey) {
     storage.set('isRunAtStartup', true);
     const minecraftAutoLauncher = new AutoLaunch({
-      name: 'Unsplash Wallpapers',
-      path: '/Applications/Unsplash Wallpapers.app', // eslint-disable-line
+      name: 'Look Wallpapers',
+      path: '/Applications/Look Wallpapers.app', // eslint-disable-line
     });
     minecraftAutoLauncher.enable();
   }

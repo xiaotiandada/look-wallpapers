@@ -47,8 +47,8 @@ const Settings = memo(({
     setIsRunAtStartup(checked);
     storage.set('isRunAtStartup', checked);
     const minecraftAutoLauncher = new AutoLaunch({
-      name: 'Unsplash Wallpapers',
-      path: '/Applications/Unsplash Wallpapers.app', // eslint-disable-line
+      name: 'Look Wallpapers',
+      path: '/Applications/Look Wallpapers.app', // eslint-disable-line
     });
     if (checked) {
       minecraftAutoLauncher.enable();
@@ -156,7 +156,7 @@ const Settings = memo(({
         }
       </div>
       <button onClick={handleQuit} className="quit">
-        Quit Unsplash Wallpapers
+        Quit Look Wallpapers
       </button>
       <a className="author" href="https://github.com/soroushchehresa/unsplash-wallpapers">
         Made with

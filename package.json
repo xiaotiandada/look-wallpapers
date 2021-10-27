@@ -1,8 +1,8 @@
 {
-  "name": "unsplash-wallpapers",
-  "productName": "Unsplash Wallpapers",
+  "name": "look-wallpapers",
+  "productName": "Look Wallpapers",
   "version": "1.3.0",
-  "description": "Unsplash cross-platform desktop application built with Electron and React",
+  "description": "Look cross-platform desktop application built with Electron and React",
   "scripts": {
     "release": "package",
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -37,8 +37,8 @@
   },
   "main": "./app/main.prod.js",
   "build": {
-    "productName": "Unsplash Wallpapers",
-    "appId": "com.soroushchehresa.UnsplashWallpapers",
+    "productName": "Look Wallpapers",
+    "appId": "com.soroushchehresa.LookWallpapers",
     "files": [
       "resources",
       "app/dist/",
