@@ -22,6 +22,31 @@ type Props = {
 
 const updateMethods = ['Hourly', 'Daily', 'Weekly', 'Manually'];
 
+const sourceList = [
+  {
+    name: 'Unsplash',
+    mode: [{
+      name: 'default',
+      url: '',
+      checked: true,
+    }],
+  },
+  {
+    name: 'Wallhaven',
+    mode: [{
+      name: '#anime',
+      url: '',
+      checked: true,
+    },
+    {
+      name: '#anime girls',
+      url: '',
+      checked: false,
+    }],
+    checked: true,
+  },
+];
+
 const Settings = memo(({
   activeTheme,
   isChangeAutomaticActiveTheme,
@@ -72,7 +97,6 @@ const Settings = memo(({
 
   return (
     <StyledSettings>
-      <h3>Settings</h3>
       <label
         className="run-at-startup"
         htmlFor="run-at-startup"
@@ -155,10 +179,49 @@ const Settings = memo(({
           )
         }
       </div>
+
+      <div className="choose-theme">
+        <p>Source:</p>
+        {
+          sourceList.map(i => (
+            <div key={i.name}>
+              <label htmlFor="light">
+                {i.name}
+                <input
+                  className="changeAutoSetTheme"
+                  type="radio"
+                  checked={i.checked}
+                />
+              </label>
+              {
+                i.checked
+                && (
+                <div>
+                  {
+                      i.mode.map(j => (
+                        <label htmlFor="light" key={`${i.name}-${j.name}`}>
+                          {j.name}
+                          <input
+                            id="mode"
+                            type="radio"
+                            value={j.name}
+                            checked={j.checked}
+                          />
+                        </label>
+                      ))
+                    }
+                </div>
+                )
+              }
+            </div>
+          ))
+        }
+      </div>
+
       <button onClick={handleQuit} className="quit">
         Quit Look Wallpapers
       </button>
-      <a className="author" href="https://github.com/soroushchehresa/unsplash-wallpapers">
+      <a className="author" href="https://github.com/xiaotiandada/look-wallpapers">
         Made with
         {' '}
         <i className="fa fa-heart" />
