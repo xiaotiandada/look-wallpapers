@@ -12,8 +12,8 @@ const AutoLaunch = require('auto-launch');
 const { autoUpdater } = require('electron-updater');
 const log = require('electron-log');
 
-const width = 375;
-const height = 385;
+const width = 875;
+const height = 685;
 
 app.allowRendererProcessReuse = true;
 

@@ -35,6 +35,11 @@ export default styled.div`
   display: flex;
   justify-content: stretch;
   flex-direction: column;
+  .wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 10px;
+  }
   .photoWrapper {
     &.disabled {
       pointer-events: none;

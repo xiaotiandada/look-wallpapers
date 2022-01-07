@@ -2,12 +2,12 @@
 
 import React, { Fragment, useEffect } from 'react';
 import { ThemeProvider } from 'styled-components';
-import { Route } from 'react-router';
+import { Route, withRouter } from 'react-router';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import storage from 'electron-json-storage';
-import { withRouter } from 'react-router';
+
 import Navbar from 'app/components/Navbar';
 import { getPhoto } from 'app/containers/Home/redux';
 import GlobalStyle from 'app/styles/globalStyles';

@@ -39,17 +39,10 @@ const Navbar = memo(({ location, activeTheme } : Props) => {
       <div className="buttonsWrapper">
         <button
           type="button"
-          onClick={() => handleChangePage('/categories')}
-          className={location.pathname === '/categories' ? 'active' : ''}
+          onClick={() => handleChangePage('/')}
+          className={location.pathname === '/' ? 'active' : ''}
         >
           <i className="fa fa-th-large" />
-        </button>
-        <button
-          type="button"
-          onClick={() => handleChangePage('/custom')}
-          className={location.pathname === '/custom' ? 'active' : ''}
-        >
-          <i className="fa fa-american-sign-language-interpreting" aria-hidden="true" />
         </button>
         <button
           type="button"
