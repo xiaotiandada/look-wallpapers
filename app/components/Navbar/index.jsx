@@ -46,6 +46,13 @@ const Navbar = memo(({ location, activeTheme } : Props) => {
         </button>
         <button
           type="button"
+          onClick={() => handleChangePage('/custom')}
+          className={location.pathname === '/custom' ? 'active' : ''}
+        >
+          <i className="fa fa-th-large" />
+        </button>
+        <button
+          type="button"
           onClick={() => handleChangePage('/history')}
           className={location.pathname === '/history' ? 'active' : ''}
         >

@@ -6,9 +6,8 @@ export default styled.div`
   background-image: url("${props => props.background}");
   background-size: cover;
   background-position: center center;
-  width: 177px;
-  height: 100px;
-  margin: 1px;
+  width: 100%;
+  height: 120px;
   object-fit: cover;
   background-color: rgba(255, 255, 255, 0.4);
   float: left;

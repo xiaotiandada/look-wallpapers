@@ -6,9 +6,9 @@ import Loading from 'app/components/Loading';
 import App from './containers/App';
 
 const HomeComponent = lazy(() => import('./containers/Home'));
+const CustomComponent = lazy(() => import('./containers/Custom'));
 const HistoryComponent = lazy(() => import('./containers/History'));
 const SettingsComponent = lazy(() => import('./containers/Settings'));
-const CategoriesComponent = lazy(() => import('./containers/Categories'));
 
 const LoadingComponent = () => (
   <div className="lazy-loading-wrapper">
@@ -19,6 +19,12 @@ const LoadingComponent = () => (
 const LazyHomeComponent = () => (
   <Suspense fallback={<LoadingComponent />}>
     <HomeComponent />
+  </Suspense>
+);
+
+const LazyCustomComponent = () => (
+  <Suspense fallback={<LoadingComponent />}>
+    <CustomComponent />
   </Suspense>
 );
 
@@ -34,19 +40,13 @@ const LazySettingsComponent = () => (
   </Suspense>
 );
 
-const LazyCategoriesComponent = () => (
-  <Suspense fallback={<LoadingComponent />}>
-    <CategoriesComponent />
-  </Suspense>
-);
-
 export default () => (
   <App>
     <Switch>
       <Route path="/" component={LazyHomeComponent} exact />
+      <Route path="/custom" component={LazyCustomComponent} />
       <Route path="/history" component={LazyHistoryComponent} />
       <Route path="/settings" component={LazySettingsComponent} />
-      <Route path="/categories" component={LazyCategoriesComponent} />
     </Switch>
   </App>
 );

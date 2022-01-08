@@ -51,3 +51,4 @@ main.js.map
 npm-debug.log.*
 
 Certificates.p12
+.run/dev.run.xml

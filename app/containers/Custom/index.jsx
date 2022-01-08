@@ -22,6 +22,13 @@ const Custom = memo(({} : Props) => {
   // anime girls q=id%3A5&sorting=random&ref=fp
   const { data, error } = useSWR(`https://wallhaven.cc/api/v1/search?apikey=${process.env.WALLHAVEN_ACCESS_KEY}&q=id:1&sorting=random&ref=fp`, fetcher);
   if (error) return <div>failed to load</div>;
+  if (!data) {
+    return (
+      <div className="loading-wrapper">
+        <Loading size="20px" color="#bbb" />
+      </div>
+    )
+  }
 
 
   /**
@@ -86,15 +93,7 @@ const Custom = memo(({} : Props) => {
 
   return (
     <StyledCustom>
-      {
-        !data
-        && (
-        <div className="loading-wrapper">
-          <Loading size="20px" color="#bbb" />
-        </div>
-        )
-      }
-      <div className="categories-wrapper">
+      <div className="wrapper">
         {
           data
           && data.data.map(i => (

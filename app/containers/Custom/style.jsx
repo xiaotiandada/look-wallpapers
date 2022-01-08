@@ -9,6 +9,11 @@ export default styled.div`
   width: 100%;
   overflow: hidden;
   position: relative;
+  .wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+  }
   > .loading-wrapper {
     display: flex;
     align-items: center;
