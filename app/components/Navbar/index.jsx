@@ -19,7 +19,8 @@ const Navbar = memo(({ location, activeTheme } : Props) => {
   const handleChangePage = (path : string) => {
     if (!disableChangeRoute) {
       setDisableChangeRoute(true);
-      history.push(location.pathname === path ? '/' : path);
+      // history.push(location.pathname === path ? '/' : path);
+      history.push(path);
       setTimeout(() => {
         setDisableChangeRoute(false);
       }, 100);
@@ -42,7 +43,7 @@ const Navbar = memo(({ location, activeTheme } : Props) => {
           onClick={() => handleChangePage('/')}
           className={location.pathname === '/' ? 'active' : ''}
         >
-          <i className="fa fa-th-large" />
+          <i className="fa fa-home" aria-hidden="true"></i>
         </button>
         <button
           type="button"

@@ -18,6 +18,7 @@ type Props = {
   photoData : MapType,
   setWallpaperLoading : boolean,
   activeCategory : number,
+  activeTheme: any
 };
 
 const Home = ({

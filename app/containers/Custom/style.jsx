@@ -2,12 +2,23 @@
 
 import styled from 'styled-components';
 import { boxsBackgroundColor } from 'app/styles/theme';
+import theme from 'styled-theming';
+
+const quitButtonColor = theme('mode', {
+  Light: '#fff',
+  Dark: '#4e5252',
+});
+
+const quitButtonTextColor = theme('mode', {
+  Light: '#222',
+  Dark: '#b4b3b7',
+});
 
 export default styled.div`
   background: ${boxsBackgroundColor};
   height: calc(100vh - 50px);
   width: 100%;
-  overflow: hidden;
+  overflow: auto;
   position: relative;
   .wrapper {
     display: grid;
@@ -30,5 +41,17 @@ export default styled.div`
     height: 100%;
     text-align: center;
     padding: 0 8px;
+  }
+  .action {
+    text-align: center;
+  }
+  .button {
+    background: ${quitButtonColor};
+    color: ${quitButtonTextColor}
+    font-size: 12px;
+    padding: 5px 10px;
+    margin: 20px auto;
+    border-radius: 4px;
+    cursor: pointer;
   }
 `;

@@ -1,7 +1,6 @@
 // @flow
-import useSWR from 'swr';
 import React, {
-  memo, useState, useEffect, useCallback,
+  memo, useCallback, useEffect, useState,
 } from 'react';
 import { connect } from 'react-redux';
 import Loading from 'app/components/Loading';
@@ -15,21 +14,51 @@ import StyledCustom from './style';
 import Item from './components/CategoryItem';
 
 type Props = {};
+// type WallhavenData = {
+//   id: string
+//   url: string
+//   short_url: string
+//   views: number
+//   favorites: number
+//   source: string
+//   purity: string
+//   category: string
+//   dimension_x: number
+//   dimension_y: number
+//   resolution: string
+//   ratio: string
+//   file_size: number
+//   file_type: string
+//   created_at: string
+//   colors: string[]
+//   path: string
+//   thumbs: {
+//     large: string
+//     original: string
+//     small: string
+//   }
+// }
+
+const urlWallhaven = `https://wallhaven.cc/api/v1/search?apikey=${process.env.WALLHAVEN_ACCESS_KEY}&q=id:1&sorting=random&ref=fp`;
 
 const Custom = memo(({} : Props) => {
-  const fetcher = (...args) => fetch(...args).then(res => res.json());
+  const [list, setList] = useState<any[]>([]);
+
+  const fetchData = useCallback(async () => {
+    const result = await axios.get(urlWallhaven);
+    // console.log('result', result);
+
+    if (result.status === 200 && result.data.data) {
+      setList(result.data.data);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   // anime q=id:1&sorting=random&ref=fp
   // anime girls q=id%3A5&sorting=random&ref=fp
-  const { data, error } = useSWR(`https://wallhaven.cc/api/v1/search?apikey=${process.env.WALLHAVEN_ACCESS_KEY}&q=id:1&sorting=random&ref=fp`, fetcher);
-  if (error) return <div>failed to load</div>;
-  if (!data) {
-    return (
-      <div className="loading-wrapper">
-        <Loading size="20px" color="#bbb" />
-      </div>
-    )
-  }
-
 
   /**
    * download image
@@ -90,22 +119,35 @@ const Custom = memo(({} : Props) => {
     [],
   );
 
-
   return (
     <StyledCustom>
-      <div className="wrapper">
-        {
-          data
-          && data.data.map(i => (
-            <Item
-              key={i.id}
-              data={i}
-              setWallpaper={setWallpaper}
-              downloadWallpaper={downloadWallpaper}
-            />
-          ))
-        }
-      </div>
+      {
+        !list.length
+          ? (
+            <div className="loading-wrapper">
+              <Loading size="20px" color="#bbb" />
+            </div>
+          )
+          : (
+            <>
+              <div className="wrapper">
+                {
+                  list.map(i => (
+                    <Item
+                      key={i.id}
+                      data={i}
+                      setWallpaper={setWallpaper}
+                      downloadWallpaper={downloadWallpaper}
+                    />
+                  ))
+                }
+              </div>
+              <div className="action">
+                <button onClick={fetchData} className="button">随机</button>
+              </div>
+            </>
+          )
+      }
     </StyledCustom>
   );
 });
