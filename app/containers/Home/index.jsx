@@ -4,27 +4,22 @@ import React, {
   useState, useEffect, useCallback, useMemo,
 } from 'react';
 import { connect } from 'react-redux';
-import type { Map as MapType } from 'immutable';
 import axios from 'axios';
 import Loading from 'app/components/Loading';
 import StyledHome from './style';
-import { getPhoto } from './redux';
 import { downloadWallpaper, setWallpaper } from '../../utils';
 
 type Props = {
-  photoData : MapType,
-  setWallpaperLoading : boolean,
   activeTheme: any
 };
 
 const urlWallhaven = `https://wallhaven.cc/api/v1/search?apikey=${process.env.WALLHAVEN_ACCESS_KEY}&q=id:1&sorting=random&ref=fp`;
 
 const Home = ({
-  photoData,
-  setWallpaperLoading,
   activeTheme,
 } : Props) => {
   const [downloadLoading, setDownloadLoading] = useState(false);
+  const [wallpaperLoading, setWallpaperLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [list, setList] = useState<any[]>([]);
 
@@ -43,7 +38,6 @@ const Home = ({
   }, []);
 
   useEffect(() => {
-    console.log('photoData', photoData, photoData.get('color'));
     fetchData();
   }, []);
 
@@ -59,10 +53,19 @@ const Home = ({
     setDownloadLoading(false);
   };
 
+  const handleSetWallpaper = async () => {
+    setWallpaperLoading(true);
+    await setWallpaper({
+      name: `wallhaven-${wrapperImageData.id}.${wrapperImageData.file_type.slice(6)}`,
+      url: wrapperImageData.path,
+    });
+    setWallpaperLoading(false);
+  };
+
   return (
     <StyledHome>
       <div
-        className={`photoWrapper${fetchLoading || setWallpaperLoading ? ' disabled' : ''}`}
+        className={`photoWrapper${fetchLoading || wallpaperLoading ? ' disabled' : ''}`}
         style={{
           backgroundImage: `url(${wrapperImageData.path || ''})`,
           backgroundColor: wrapperImageData.colors ? (wrapperImageData.colors[0] || '#ffffff') : '#ffffff',
@@ -91,11 +94,11 @@ const Home = ({
       </div>
       <button
         className="setWallpaperButton"
-        disabled={fetchLoading || setWallpaperLoading}
-        onClick={setWallpaper}
+        disabled={fetchLoading || wallpaperLoading}
+        onClick={handleSetWallpaper}
       >
         <span>Set as Wallpaper</span>
-        {setWallpaperLoading && <Loading color={activeTheme === 'Dark' ? '#ccc' : '#666'} size="14px" />}
+        {wallpaperLoading && <Loading color={activeTheme === 'Dark' ? '#ccc' : '#666'} size="14px" />}
       </button>
       <div className="bottomWrapper">
         <a className="author" href={wrapperImageData.path || ''}>
@@ -103,7 +106,7 @@ const Home = ({
         </a>
         <button
           onClick={handleDownload}
-          className={`download${fetchLoading || setWallpaperLoading || downloadLoading ? ' disabled' : ''}`}
+          className={`download${fetchLoading || wallpaperLoading || downloadLoading ? ' disabled' : ''}`}
         >
           Download
           {downloadLoading && <Loading color={activeTheme === 'Dark' ? '#ccc' : '#666'} size="10px" />}
@@ -115,14 +118,8 @@ const Home = ({
 
 export default connect(
   state => ({
-    setWallpaperLoading: state.getIn(['Home', 'setWallpaperLoading']),
-    getPhotoLoading: state.getIn(['Home', 'getPhotoLoading']),
     photoData: state.getIn(['Home', 'photoData']),
     activeCategory: state.getIn(['Categories', 'activeCategory']),
     activeTheme: state.getIn(['Settings', 'activeTheme']),
   }),
-  {
-    getPhotoAction: getPhoto,
-    setWallpaperAction: setWallpaper,
-  },
 )(Home);
