@@ -35,6 +35,9 @@ export default styled.div`
   width: 100%;
   position: relative;
   justify-content: stretch;
+  .source-label {
+    margin-left: 10px;
+  }
   > h3 {
     margin: 10px 0 20px;
     font-size: 20px;

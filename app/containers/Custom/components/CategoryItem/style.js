@@ -7,7 +7,7 @@ export default styled.div`
   background-size: cover;
   background-position: center center;
   width: 100%;
-  height: 120px;
+  height: 160px;
   object-fit: cover;
   background-color: rgba(255, 255, 255, 0.4);
   float: left;

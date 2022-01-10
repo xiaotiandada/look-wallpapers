@@ -24,26 +24,14 @@ const updateMethods = ['Hourly', 'Daily', 'Weekly', 'Manually'];
 
 const sourceList = [
   {
-    name: 'Unsplash',
-    mode: [{
-      name: 'default',
-      url: '',
-      checked: true,
-    }],
+    name: '#anime',
+    url: '',
+    checked: true,
   },
   {
-    name: 'Wallhaven',
-    mode: [{
-      name: '#anime',
-      url: '',
-      checked: true,
-    },
-    {
-      name: '#anime girls',
-      url: '',
-      checked: false,
-    }],
-    checked: true,
+    name: '#anime girls',
+    url: '',
+    checked: false,
   },
 ];
 
@@ -181,41 +169,29 @@ const Settings = memo(({
       </div>
 
       <div className="choose-theme">
-        <p>Source:</p>
-        {
+        <p>
+          Source Wallhaven:
+          {
           sourceList.map(i => (
-            <div key={i.name}>
-              <label htmlFor="light">
-                {i.name}
-                <input
-                  className="changeAutoSetTheme"
-                  type="radio"
-                  checked={i.checked}
-                />
-              </label>
-              {
-                i.checked
-                && (
-                <div>
-                  {
-                      i.mode.map(j => (
-                        <label htmlFor="light" key={`${i.name}-${j.name}`}>
-                          {j.name}
-                          <input
-                            id="mode"
-                            type="radio"
-                            value={j.name}
-                            checked={j.checked}
-                          />
-                        </label>
-                      ))
-                    }
-                </div>
-                )
-              }
-            </div>
+            <label htmlFor="source" key={`${i.name}`} className="source-label">
+              <input
+                id="mode"
+                type="radio"
+                value={i.name}
+                checked={i.checked}
+              />
+              {i.name}
+            </label>
           ))
         }
+        </p>
+      </div>
+
+      <div className="choose-theme">
+        <p>
+          Save Path:
+          /Xiao/Code
+        </p>
       </div>
 
       <button onClick={handleQuit} className="quit">
