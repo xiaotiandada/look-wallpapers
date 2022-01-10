@@ -10,7 +10,7 @@ import StyledHome from './style';
 import { downloadWallpaper, setWallpaper } from '../../utils';
 
 type Props = {
-  activeTheme: any
+  activeTheme: string
 };
 
 const urlWallhaven = `https://wallhaven.cc/api/v1/search?apikey=${process.env.WALLHAVEN_ACCESS_KEY}&q=id:1&sorting=random&ref=fp`;
@@ -118,8 +118,6 @@ const Home = ({
 
 export default connect(
   state => ({
-    photoData: state.getIn(['Home', 'photoData']),
-    activeCategory: state.getIn(['Categories', 'activeCategory']),
     activeTheme: state.getIn(['Settings', 'activeTheme']),
   }),
 )(Home);
