@@ -1,124 +1,109 @@
 // @flow
 
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState, useEffect, useCallback, useMemo,
+} from 'react';
 import { connect } from 'react-redux';
 import type { Map as MapType } from 'immutable';
 import axios from 'axios';
-import path from 'path';
-import fs from 'fs';
-import os from 'os';
 import Loading from 'app/components/Loading';
 import StyledHome from './style';
-import { getPhoto, setWallpaper } from './redux';
+import { getPhoto } from './redux';
+import { downloadWallpaper, setWallpaper } from '../../utils';
 
 type Props = {
-  getPhotoAction : () => void,
-  setWallpaperAction : () => void,
-  getPhotoLoading : boolean,
   photoData : MapType,
   setWallpaperLoading : boolean,
-  activeCategory : number,
   activeTheme: any
 };
 
+const urlWallhaven = `https://wallhaven.cc/api/v1/search?apikey=${process.env.WALLHAVEN_ACCESS_KEY}&q=id:1&sorting=random&ref=fp`;
+
 const Home = ({
-  getPhotoLoading,
-  getPhotoAction,
   photoData,
-  setWallpaperAction,
   setWallpaperLoading,
-  activeCategory,
   activeTheme,
 } : Props) => {
   const [downloadLoading, setDownloadLoading] = useState(false);
-  useEffect(() => {
-    if (photoData.size === 0) {
-      getPhotoAction({ activeCategory });
+  const [fetchLoading, setFetchLoading] = useState(false);
+  const [list, setList] = useState<any[]>([]);
+
+  // fetch data
+  const fetchData = useCallback(async () => {
+    setFetchLoading(true);
+
+    const result = await axios.get(urlWallhaven);
+    // console.log('result', result);
+
+    if (result.status === 200 && result.data.data) {
+      setList(result.data.data);
     }
+
+    setFetchLoading(false);
   }, []);
 
-  const handleDownload = () => {
+  useEffect(() => {
+    console.log('photoData', photoData, photoData.get('color'));
+    fetchData();
+  }, []);
+
+  const wrapperImageData = useMemo(() => (list[0] || ''), [list]);
+
+  // handle download
+  const handleDownload = async () => {
     setDownloadLoading(true);
-    axios.get(photoData.getIn(['links', 'download']), { responseType: 'arraybuffer' })
-      .then(({ data }) => {
-        const base64Image = new Buffer.from(data, 'binary').toString(
-          'base64',
-        );
-        let picturePath = path.join(
-          os.homedir(),
-          '/Downloads',
-          `unsplash-${photoData.get('id')}.png`,
-        );
-        picturePath = path.normalize(picturePath);
-        fs.writeFile(picturePath, base64Image, 'base64', () => {
-          setDownloadLoading(false);
-          new Notification('Download Completed!', {
-            body: `Image saved in "${os.homedir()}/Downloads"`,
-            icon: path.join(__dirname, '../resources/icons/64x64.png'),
-          });
-        });
-      })
-      .catch(() => {
-        setDownloadLoading(false);
-        new Notification('Download Failed!', {
-          body: 'network connection error...',
-          icon: path.join(__dirname, '../resources/icons/64x64.png'),
-        });
-      });
+    await downloadWallpaper({
+      name: `wallhaven-${wrapperImageData.id}.${wrapperImageData.file_type.slice(6)}`,
+      url: wrapperImageData.path,
+    });
+    setDownloadLoading(false);
   };
 
   return (
     <StyledHome>
       <div
-        className={`photoWrapper${getPhotoLoading || setWallpaperLoading ? ' disabled' : ''}`}
+        className={`photoWrapper${fetchLoading || setWallpaperLoading ? ' disabled' : ''}`}
         style={{
-          backgroundImage: `url(${photoData.getIn(['urls', 'small'])})`,
-          backgroundColor: photoData.get('color'),
+          backgroundImage: `url(${wrapperImageData.path || ''})`,
+          backgroundColor: wrapperImageData.colors ? (wrapperImageData.colors[0] || '#ffffff') : '#ffffff',
         }}
-        onClick={() => getPhotoAction({ activeCategory })}
+        onClick={() => fetchData()}
       >
         <div className="buttonWrapper">
-          {getPhotoLoading ? (
+          {fetchLoading ? (
             <Loading color="#fff" size="16px" />
           ) : (
             <i className="fa fa-refresh" />
           )}
         </div>
-        <a onClick={e => e.stopPropagation()} className="badge location" href={photoData.getIn(['location', 'country']) ? `https://www.google.com/maps?q=${photoData.getIn(['location', 'position', 'latitude'])},${photoData.getIn(['location', 'position', 'longitude'])}` : ''}>
-          <i className="fa fa-map-marker" />
-          {photoData.getIn(['location', 'country']) || 'Unknown'}
-          {photoData.getIn(['location', 'city']) ? ` - ${photoData.getIn(['location', 'city'])}` : ''}
-        </a>
+        <span
+          className="badge location"
+        >
+          <i className="fa fa-tag" aria-hidden="true" />
+          {
+            wrapperImageData.category || 'Unknown'
+          }
+        </span>
         <span className="badge likes">
           <i className="fa fa-heart" />
-          {photoData.getIn(['likes']) || '0'}
+          {wrapperImageData.favorites || 0}
         </span>
       </div>
       <button
         className="setWallpaperButton"
-        disabled={getPhotoLoading || setWallpaperLoading}
-        onClick={setWallpaperAction}
+        disabled={fetchLoading || setWallpaperLoading}
+        onClick={setWallpaper}
       >
         <span>Set as Wallpaper</span>
         {setWallpaperLoading && <Loading color={activeTheme === 'Dark' ? '#ccc' : '#666'} size="14px" />}
       </button>
       <div className="bottomWrapper">
-        <a className="author" href={photoData.getIn(['links', 'html'])}>
-          By
-          {
-            (photoData.size > 0)
-              ? (
-                <span>
-                  {photoData.getIn(['user', 'first_name'])}
-                  {photoData.getIn(['user', 'last_name']) || ''}
-                </span>
-              )
-              : <span className="empty">-------</span>
-          }
+        <a className="author" href={wrapperImageData.path || ''}>
+          Link
         </a>
         <button
           onClick={handleDownload}
-          className={`download${getPhotoLoading || setWallpaperLoading || downloadLoading || photoData.size === 0 ? ' disabled' : ''}`}
+          className={`download${fetchLoading || setWallpaperLoading || downloadLoading ? ' disabled' : ''}`}
         >
           Download
           {downloadLoading && <Loading color={activeTheme === 'Dark' ? '#ccc' : '#666'} size="10px" />}

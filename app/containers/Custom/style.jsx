@@ -53,5 +53,7 @@ export default styled.div`
     margin: 20px auto;
     border-radius: 4px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
   }
 `;

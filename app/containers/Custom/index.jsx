@@ -12,8 +12,11 @@ import path from 'path';
 import fs from 'fs';
 import StyledCustom from './style';
 import Item from './components/CategoryItem';
+import { downloadWallpaper, setWallpaper } from '../../utils';
 
-type Props = {};
+type Props = {
+  activeTheme: any
+};
 // type WallhavenData = {
 //   id: string
 //   url: string
@@ -41,16 +44,24 @@ type Props = {};
 
 const urlWallhaven = `https://wallhaven.cc/api/v1/search?apikey=${process.env.WALLHAVEN_ACCESS_KEY}&q=id:1&sorting=random&ref=fp`;
 
-const Custom = memo(({} : Props) => {
+const Custom = memo(({
+  activeTheme,
+} : Props) => {
   const [list, setList] = useState<any[]>([]);
+  const [fetchLoading, setFetchLoading] = useState(false);
 
+  // fetch data
   const fetchData = useCallback(async () => {
+    setFetchLoading(true)
+
     const result = await axios.get(urlWallhaven);
     // console.log('result', result);
 
     if (result.status === 200 && result.data.data) {
       setList(result.data.data);
     }
+
+    setFetchLoading(false)
   }, []);
 
   useEffect(() => {
@@ -59,65 +70,6 @@ const Custom = memo(({} : Props) => {
 
   // anime q=id:1&sorting=random&ref=fp
   // anime girls q=id%3A5&sorting=random&ref=fp
-
-  /**
-   * download image
-   */
-  const downloadImage = useCallback(
-    async ({
-      name,
-      url,
-    }) => {
-      // path
-      const outputLocationPath = path.join(
-        os.homedir(),
-        '/Pictures',
-        name,
-      );
-
-      // download
-      const response = await axios.get(url, {
-        responseType: 'arraybuffer',
-      });
-
-      const base64Image = new Buffer.from(
-        response.data,
-        'binary',
-      ).toString('base64');
-      await util.promisify(fs.writeFile)(outputLocationPath, base64Image, 'base64');
-
-      return outputLocationPath;
-    },
-    [],
-  );
-  /**
-   * download wallpaper
-   */
-  const downloadWallpaper = useCallback(
-    async ({
-      name,
-      url,
-    }) => {
-      await downloadImage({ name, url });
-      console.log('download wallpaper success');
-    },
-    [],
-  );
-
-  /**
-   * set wallpaper
-   */
-  const setWallpaper = useCallback(
-    async ({
-      name,
-      url,
-    }) => {
-      const imagePath = await downloadImage({ name, url });
-      await wallpaper.set(imagePath, { scale: 'auto' });
-      console.log('set wallpaper success');
-    },
-    [],
-  );
 
   return (
     <StyledCustom>
@@ -143,7 +95,12 @@ const Custom = memo(({} : Props) => {
                 }
               </div>
               <div className="action">
-                <button onClick={fetchData} className="button">随机</button>
+                <button onClick={fetchData} className="button">
+                  <span style={{ marginRight: 4 }}>随机</span>
+                  {
+                    fetchLoading && <Loading color={activeTheme === 'Dark' ? '#ccc' : '#666'} size="10px" />
+                  }
+                </button>
               </div>
             </>
           )
@@ -152,4 +109,8 @@ const Custom = memo(({} : Props) => {
   );
 });
 
-export default connect()(Custom);
+export default connect(
+  state => ({
+    activeTheme: state.getIn(['Settings', 'activeTheme']),
+  }),
+)(Custom);
