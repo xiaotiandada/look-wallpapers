@@ -1,7 +1,7 @@
 // @flow
 
 import React, {
-  Fragment, memo, useState, useEffect,
+  Fragment, memo, useState, useEffect, useCallback,
 } from 'react';
 import type { SyntheticEvent } from 'react';
 import { remote } from 'electron';
@@ -12,6 +12,7 @@ import AutoLaunch from 'auto-launch';
 import appPackage from '../../../package';
 import StyledSettings from './style';
 import { setActiveTheme, setAutomaticChangeActiveTheme } from './redux';
+import { API_LIST } from '../../config';
 
 type Props = {
   setActiveThemeAction : (data : string) => void,
@@ -22,19 +23,6 @@ type Props = {
 
 const updateMethods = ['Hourly', 'Daily', 'Weekly', 'Manually'];
 
-const sourceList = [
-  {
-    name: '#anime',
-    url: '',
-    checked: true,
-  },
-  {
-    name: '#anime girls',
-    url: '',
-    checked: false,
-  },
-];
-
 const Settings = memo(({
   activeTheme,
   isChangeAutomaticActiveTheme,
@@ -43,12 +31,23 @@ const Settings = memo(({
 } : Props) => {
   const [autoUpdateWallpaperSchedule, setAutoUpdateWallpaperSchedule] = useState(null);
   const [isRunAtStartup, setIsRunAtStartup] = useState(false);
+  const [sourceKey, setSourceKey] = useState('anime');
+
+  /**
+   * fetch Source Key
+   * @type {(function(): void)|*}
+   */
+  const fetchSourceKey = useCallback(() => {
+    setSourceKey('anime');
+  }, []);
 
   useEffect(() => {
     storage.getMany(['isRunAtStartup', 'autoUpdateWallpaperSchedule'], (error, data) => {
       setIsRunAtStartup(data.isRunAtStartup);
       setAutoUpdateWallpaperSchedule(data.autoUpdateWallpaperSchedule || 'Manually');
     });
+
+    fetchSourceKey();
   }, []);
 
   const handleQuit = () => {
@@ -172,17 +171,17 @@ const Settings = memo(({
         <p>
           Source Wallhaven:
           {
-          sourceList.map(i => (
-            <label htmlFor="source" key={`${i.name}`} className="source-label">
-              <input
-                id="mode"
-                type="radio"
-                value={i.name}
-                checked={i.checked}
-              />
-              {i.name}
-            </label>
-          ))
+            Object.keys(API_LIST).map(i => (
+              <label htmlFor="source" key={i} className="source-label">
+                <input
+                  id="mode"
+                  type="radio"
+                  value={i}
+                  checked={i === sourceKey}
+                />
+                {i}
+              </label>
+            ))
         }
         </p>
       </div>

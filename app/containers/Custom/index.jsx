@@ -68,9 +68,6 @@ const Custom = memo(({
     fetchData();
   }, []);
 
-  // anime q=id:1&sorting=random&ref=fp
-  // anime girls q=id%3A5&sorting=random&ref=fp
-
   return (
     <StyledCustom>
       {
