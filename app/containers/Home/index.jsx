@@ -6,8 +6,12 @@ import React, {
 import { connect } from 'react-redux';
 import axios from 'axios';
 import Loading from 'app/components/Loading';
+import { uniqBy } from 'lodash'
 import StyledHome from './style';
-import { downloadWallpaper, setWallpaper } from '../../utils';
+import {
+  downloadWallpaper, setWallpaper, storageGet, storageSet,
+} from '../../utils';
+import { STORAGE_KEY } from '../../config';
 
 type Props = {
   activeTheme: string
@@ -23,7 +27,10 @@ const Home = ({
   const [fetchLoading, setFetchLoading] = useState(false);
   const [list, setList] = useState<any[]>([]);
 
-  // fetch data
+  /**
+   * fetch data
+   * @type {(function(): Promise<void>)|*}
+   */
   const fetchData = useCallback(async () => {
     setFetchLoading(true);
 
@@ -41,18 +48,58 @@ const Home = ({
     fetchData();
   }, []);
 
+  /**
+   * wrapper Image Data
+   * @type {unknown}
+   */
   const wrapperImageData = useMemo(() => (list[0] || ''), [list]);
 
-  // handle download
+  /**
+   * save Storage
+   * @type {(function(*): Promise<void>)|*}
+   */
+  const saveStorage = useCallback(async (data) => {
+    const key = STORAGE_KEY;
+    const pictures = await storageGet(key);
+
+    if (pictures.list) {
+      const picturesList = [
+        ...pictures.list,
+        data,
+      ];
+      await storageSet(key, {
+        list: uniqBy(picturesList, 'id'),
+      });
+    } else {
+      await storageSet(key, {
+        list: [
+          data,
+        ],
+      });
+    }
+  }, [])
+
+  /**
+   * handle download
+   * @returns {Promise<void>}
+   */
   const handleDownload = async () => {
     setDownloadLoading(true);
+
     await downloadWallpaper({
       name: `wallhaven-${wrapperImageData.id}.${wrapperImageData.file_type.slice(6)}`,
       url: wrapperImageData.path,
     });
+
+    await saveStorage(wrapperImageData);
+
     setDownloadLoading(false);
   };
 
+  /**
+   * handle Set Wallpaper
+   * @returns {Promise<void>}
+   */
   const handleSetWallpaper = async () => {
     setWallpaperLoading(true);
     await setWallpaper({

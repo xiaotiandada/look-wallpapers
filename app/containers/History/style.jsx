@@ -7,7 +7,7 @@ export default styled.div`
   background: ${boxsBackgroundColor};
   height: calc(100vh - 50px);
   width: 100%;
-  overflow: hidden;
+  overflow: auto;
   position: relative;
   > .loading-wrapper {
     height: calc(100vh - 50px);
@@ -15,19 +15,13 @@ export default styled.div`
     justify-content: center;
     align-items: center;
   }
-  > .pictures-wrapper {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: -17px;
-    overflow-y: scroll;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    padding: 0 8px;
-    > .empty-list {
-          color: #999;
-    }
+  .wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+  }
+  > .empty-list {
+    color: #999;
   }
   .empty-history {
     color: #999;

@@ -4,6 +4,36 @@ import os from 'os';
 import axios from 'axios';
 import util from 'util';
 import fs from 'fs';
+import storage from 'electron-json-storage';
+
+/**
+ * storage Get
+ * @returns {Promise<unknown>}
+ */
+export const storageGet = key => new Promise((resolve, reject) => {
+  storage.get(key, (error, data) => {
+    if (error) {
+      reject(error);
+    }
+
+    console.log(data);
+    resolve(data);
+  });
+});
+
+/**
+ * storage Set
+ * @param data
+ * @returns {Promise<unknown>}
+ */
+export const storageSet = (key, data) => new Promise((resolve, reject) => {
+  storage.set(key, data, (error) => {
+    if (error) {
+      reject(error);
+    }
+    resolve('success');
+  });
+});
 
 /**
  * download image
