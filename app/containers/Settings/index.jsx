@@ -12,8 +12,10 @@ import AutoLaunch from 'auto-launch';
 import appPackage from '../../../package';
 import StyledSettings from './style';
 import { setActiveTheme, setAutomaticChangeActiveTheme } from './redux';
-import { API_LIST } from '../../config';
-import { imagesSavePath, modifySavePath } from '../../utils';
+import { API_LIST, KEY_STORAGE_SOURCE } from '../../config';
+import {
+  imagesSavePath, modifySavePath, storageGet, storageSet,
+} from '../../utils';
 
 type Props = {
   setActiveThemeAction : (data : string) => void,
@@ -40,11 +42,21 @@ const Settings = memo(({
    * fetch Source Key
    * @type {(function(): void)|*}
    */
-  const fetchSourceKey = useCallback(() => {
-    setSourceKey('anime');
+  const fetchSourceKey = useCallback(async () => {
+    const sourceData = await storageGet(KEY_STORAGE_SOURCE);
+    if (sourceData && sourceData.tag) {
+      const list = Object.keys(API_LIST);
+      if (list.includes(sourceData.tag)) {
+        setSourceKey(sourceData.tag);
+      } else {
+        setSourceKey('anime');
+      }
+    } else {
+      setSourceKey('anime');
+    }
   }, []);
 
-  const fetchSavepath = useCallback(async () => {
+  const fetchSavePath = useCallback(async () => {
     setSavePath(await imagesSavePath());
   }, []);
 
@@ -55,8 +67,8 @@ const Settings = memo(({
     });
 
     fetchSourceKey();
-    fetchSavepath();
-  }, [fetchSavepath]);
+    fetchSavePath();
+  }, [fetchSavePath]);
 
   const handleQuit = () => {
     remote.getCurrentWindow()
@@ -102,12 +114,21 @@ const Settings = memo(({
 
         if (!result.canceled && result.filePaths.length) {
           modifySavePath(result.filePaths[0])
-            .then(() => fetchSavepath());
+            .then(() => fetchSavePath());
         }
       }).catch((err) => {
         console.log(err);
       });
-  }, [fetchSavepath]);
+  }, [fetchSavePath]);
+
+  /**
+   * handle Source Change
+   * @type {(function(*): Promise<void>)|*}
+   */
+  const handleSourceChange = useCallback(async (tag) => {
+    await storageSet(KEY_STORAGE_SOURCE, { tag });
+    setSourceKey(tag);
+  }, []);
 
   return (
     <StyledSettings>
@@ -205,6 +226,7 @@ const Settings = memo(({
                   type="radio"
                   value={i}
                   checked={i === sourceKey}
+                  onChange={() => handleSourceChange(i)}
                 />
                 {i}
               </label>
