@@ -1,7 +1,7 @@
 {
   "name": "look-wallpapers",
   "productName": "Look Wallpapers",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "Look cross-platform desktop application built with Electron and React",
   "scripts": {
     "release": "package",
