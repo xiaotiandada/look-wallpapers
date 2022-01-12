@@ -5,7 +5,7 @@ import axios from 'axios';
 import util from 'util';
 import fs from 'fs';
 import storage from 'electron-json-storage';
-import { KEY_STORAGE_SAVE_PATH } from '../config';
+import { API_LIST, KEY_STORAGE_SAVE_PATH, KEY_STORAGE_SOURCE } from '../config';
 
 /**
  * storage Get
@@ -152,4 +152,16 @@ export const setWallpaper = async ({
   const imagePath = await downloadImage({ name, url });
   await wallpaper.set(imagePath, { scale: 'auto' });
   console.log('set wallpaper success');
+};
+
+/**
+ * wallhaven Url
+ * @returns {string|*}
+ */
+export const wallhavenUrl = async () => {
+  const sourceData = await storageGet(KEY_STORAGE_SOURCE);
+  if (sourceData && sourceData.tag) {
+    return API_LIST[sourceData.tag] || API_LIST.anime;
+  }
+  return API_LIST.anime;
 };

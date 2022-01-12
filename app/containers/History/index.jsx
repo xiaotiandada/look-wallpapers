@@ -14,7 +14,7 @@ import { KEY_STORAGE_PICTURES } from '../../config';
 type Props = {
 };
 
-const History = memo(({ } : Props) => {
+const History = memo(({} : Props) => {
   const [pictures, setPictures] = useState([]);
   const [getPicturesLoading, setGetPicturesLoading] = useState(true);
 

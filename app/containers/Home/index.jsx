@@ -6,18 +6,16 @@ import React, {
 import { connect } from 'react-redux';
 import axios from 'axios';
 import Loading from 'app/components/Loading';
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'lodash';
 import StyledHome from './style';
 import {
-  downloadWallpaper, setWallpaper, storageGet, storageSet,
+  downloadWallpaper, setWallpaper, storageGet, storageSet, wallhavenUrl,
 } from '../../utils';
 import { KEY_STORAGE_PICTURES } from '../../config';
 
 type Props = {
   activeTheme: string
 };
-
-const urlWallhaven = `https://wallhaven.cc/api/v1/search?apikey=${process.env.WALLHAVEN_ACCESS_KEY}&q=id:1&sorting=random&ref=fp`;
 
 const Home = ({
   activeTheme,
@@ -34,7 +32,8 @@ const Home = ({
   const fetchData = useCallback(async () => {
     setFetchLoading(true);
 
-    const result = await axios.get(urlWallhaven);
+    const url = await wallhavenUrl();
+    const result = await axios.get(url);
     // console.log('result', result);
 
     if (result.status === 200 && result.data.data) {
@@ -77,7 +76,7 @@ const Home = ({
         ],
       });
     }
-  }, [])
+  }, []);
 
   /**
    * handle download

@@ -4,15 +4,11 @@ import React, {
 } from 'react';
 import { connect } from 'react-redux';
 import Loading from 'app/components/Loading';
-import wallpaper from 'wallpaper';
-import os from 'os';
 import axios from 'axios';
-import util from 'util';
-import path from 'path';
-import fs from 'fs';
 import StyledCustom from './style';
 import Item from './components/CategoryItem';
-import { downloadWallpaper, setWallpaper } from '../../utils';
+import { downloadWallpaper, setWallpaper, wallhavenUrl } from '../../utils';
+import { API_LIST } from '../../config';
 
 type Props = {
   activeTheme: any
@@ -42,26 +38,28 @@ type Props = {
 //   }
 // }
 
-const urlWallhaven = `https://wallhaven.cc/api/v1/search?apikey=${process.env.WALLHAVEN_ACCESS_KEY}&q=id:1&sorting=random&ref=fp`;
-
 const Custom = memo(({
   activeTheme,
 } : Props) => {
   const [list, setList] = useState<any[]>([]);
   const [fetchLoading, setFetchLoading] = useState(false);
 
-  // fetch data
+  /**
+   * fetch Data
+   * @type {(function(): Promise<void>)|*}
+   */
   const fetchData = useCallback(async () => {
-    setFetchLoading(true)
+    setFetchLoading(true);
 
-    const result = await axios.get(urlWallhaven);
+    const url = await wallhavenUrl();
+    const result = await axios.get(url);
     // console.log('result', result);
 
     if (result.status === 200 && result.data.data) {
       setList(result.data.data);
     }
 
-    setFetchLoading(false)
+    setFetchLoading(false);
   }, []);
 
   useEffect(() => {
