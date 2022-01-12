@@ -11,7 +11,7 @@ import StyledHome from './style';
 import {
   downloadWallpaper, setWallpaper, storageGet, storageSet,
 } from '../../utils';
-import { STORAGE_KEY } from '../../config';
+import { KEY_STORAGE_PICTURES } from '../../config';
 
 type Props = {
   activeTheme: string
@@ -59,7 +59,7 @@ const Home = ({
    * @type {(function(*): Promise<void>)|*}
    */
   const saveStorage = useCallback(async (data) => {
-    const key = STORAGE_KEY;
+    const key = KEY_STORAGE_PICTURES;
     const pictures = await storageGet(key);
 
     if (pictures.list) {

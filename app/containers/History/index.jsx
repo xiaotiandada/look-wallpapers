@@ -9,7 +9,7 @@ import Loading from 'app/components/Loading';
 import StyledHistory from './style';
 import { downloadWallpaper, setWallpaper, storageGet } from '../../utils';
 import Item from '../Custom/components/CategoryItem';
-import { STORAGE_KEY } from '../../config';
+import { KEY_STORAGE_PICTURES } from '../../config';
 
 type Props = {
 };
@@ -19,7 +19,7 @@ const History = memo(({ } : Props) => {
   const [getPicturesLoading, setGetPicturesLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
-    const key = STORAGE_KEY;
+    const key = KEY_STORAGE_PICTURES;
     const picturesData = await storageGet(key);
     if (picturesData && picturesData.list) {
       setPictures(picturesData.list);

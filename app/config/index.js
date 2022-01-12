@@ -2,7 +2,8 @@
  * STORAGE KEY
  * @type {string}
  */
-export const STORAGE_KEY = 'pictures3';
+export const KEY_STORAGE_PICTURES = 'pictures';
+export const KEY_STORAGE_SAVE_PATH = 'SAVE_PATH';
 
 // anime q=id:1&sorting=random&ref=fp
 // anime girls q=id%3A5&sorting=random&ref=fp

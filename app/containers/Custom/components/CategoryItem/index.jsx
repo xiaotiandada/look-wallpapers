@@ -3,7 +3,7 @@
 import React, { memo, useCallback } from 'react';
 import { uniqBy } from 'lodash';
 import StyledCategoryItem from './style';
-import { STORAGE_KEY } from '../../../../config';
+import { KEY_STORAGE_PICTURES } from '../../../../config';
 import { storageGet, storageSet } from '../../../../utils';
 
 type Props = {
@@ -20,7 +20,7 @@ export default memo(({
    * @type {(function(): Promise<void>)|*}
    */
   const saveStorage = useCallback(async () => {
-    const key = STORAGE_KEY;
+    const key = KEY_STORAGE_PICTURES;
     const pictures = await storageGet(key);
 
     if (pictures.list) {

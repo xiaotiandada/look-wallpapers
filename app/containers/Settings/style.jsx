@@ -94,6 +94,12 @@ export default styled.div`
           margin-left: 5px;
         }
       }
+      .path {
+        text-decoration: underline;
+      }
+      .path-btn {
+        cursor: pointer;
+      }
     }
   .quit {
     position: absolute;

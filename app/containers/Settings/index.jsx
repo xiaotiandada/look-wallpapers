@@ -13,6 +13,7 @@ import appPackage from '../../../package';
 import StyledSettings from './style';
 import { setActiveTheme, setAutomaticChangeActiveTheme } from './redux';
 import { API_LIST } from '../../config';
+import { imagesSavePath, modifySavePath } from '../../utils';
 
 type Props = {
   setActiveThemeAction : (data : string) => void,
@@ -23,6 +24,7 @@ type Props = {
 
 const updateMethods = ['Hourly', 'Daily', 'Weekly', 'Manually'];
 
+
 const Settings = memo(({
   activeTheme,
   isChangeAutomaticActiveTheme,
@@ -32,6 +34,7 @@ const Settings = memo(({
   const [autoUpdateWallpaperSchedule, setAutoUpdateWallpaperSchedule] = useState(null);
   const [isRunAtStartup, setIsRunAtStartup] = useState(false);
   const [sourceKey, setSourceKey] = useState('anime');
+  const [savePath, setSavePath] = useState('');
 
   /**
    * fetch Source Key
@@ -41,6 +44,10 @@ const Settings = memo(({
     setSourceKey('anime');
   }, []);
 
+  const fetchSavepath = useCallback(async () => {
+    setSavePath(await imagesSavePath());
+  }, []);
+
   useEffect(() => {
     storage.getMany(['isRunAtStartup', 'autoUpdateWallpaperSchedule'], (error, data) => {
       setIsRunAtStartup(data.isRunAtStartup);
@@ -48,7 +55,8 @@ const Settings = memo(({
     });
 
     fetchSourceKey();
-  }, []);
+    fetchSavepath();
+  }, [fetchSavepath]);
 
   const handleQuit = () => {
     remote.getCurrentWindow()
@@ -81,6 +89,25 @@ const Settings = memo(({
   const handleSetAutoChangeTheme = (e : SyntheticEvent<HTMLInputElement>) => {
     setAutomaticChangeActiveThemeAction(e.target.checked);
   };
+
+  /**
+   * handle Save Path
+   * @type {(function(): void)|*}
+   */
+  const handleSavePath = useCallback(() => {
+    remote.dialog.showOpenDialog({ properties: ['openDirectory'] })
+      .then((result) => {
+        console.log(result.canceled);
+        console.log(result.filePaths);
+
+        if (!result.canceled && result.filePaths.length) {
+          modifySavePath(result.filePaths[0])
+            .then(() => fetchSavepath());
+        }
+      }).catch((err) => {
+        console.log(err);
+      });
+  }, [fetchSavepath]);
 
   return (
     <StyledSettings>
@@ -189,7 +216,8 @@ const Settings = memo(({
       <div className="choose-theme">
         <p>
           Save Path:
-          /Xiao/Code
+          <span className="path">{ savePath }</span>
+          <span className="path-btn" onClick={handleSavePath}>修改</span>
         </p>
       </div>
 
