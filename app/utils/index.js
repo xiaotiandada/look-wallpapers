@@ -1,4 +1,5 @@
 import wallpaper from 'wallpaper';
+import { remote } from 'electron';
 import path from 'path';
 import os from 'os';
 import axios from 'axios';
@@ -140,6 +141,10 @@ export const downloadWallpaper = async ({
 }) => {
   await downloadImage({ name, url });
   console.log('download wallpaper success');
+  new remote.Notification({
+    title: 'Notification',
+    body: 'Download Image Success!',
+  }).show();
 };
 
 /**
@@ -152,6 +157,14 @@ export const setWallpaper = async ({
   const imagePath = await downloadImage({ name, url });
   await wallpaper.set(imagePath, { scale: 'auto' });
   console.log('set wallpaper success');
+  new remote.Notification('Set Completed!', {
+    body: 'Set wallpaper success"',
+    icon: path.join(__dirname, '../resources/icons/64x64.png'),
+  });
+  new remote.Notification({
+    title: 'Notification',
+    body: 'Set Wallpaper Success',
+  }).show();
 };
 
 /**
